@@ -12,4 +12,12 @@ import java.util.List;
 public interface ClientOrderRepository extends JpaRepository<ClientOrder, Long> {
     @Query("FROM ClientOrder WHERE client.id = :id")
     List<ClientOrder> getClientOrders(Long id);
+
+    @Query("UPDATE ClientOrder SET status = 2, total = :total WHERE client.id = :clientId AND status = 1")
+    ClientOrder updateClientOrder(Long clientId, Double total);
+
+    ClientOrder getClientOrderByClientId(Long clientId);
+
+    @Query("FROM ClientOrder WHERE client.id = :userId ORDER BY id DESC LIMIT 1")
+    ClientOrder findLastByClientId(Long userId);
 }

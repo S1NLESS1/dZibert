@@ -11,4 +11,12 @@ import java.util.List;
 public interface ClientRepository extends JpaRepository<Client, Long> {
     @Query("FROM Client WHERE fullName ILIKE %:name%")
     List<Client> searchClientsByName(String name);
+
+    void deleteClientsByExternalId(Long externalId);
+
+    Client findFirstClientByExternalId(Long externalId);
+
+    Client getClientByExternalId(Long userId);
+
+    Client getClientById(Long clientId);
 }

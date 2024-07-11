@@ -1,7 +1,6 @@
 package ru.dZibert.tgBot.Service;
 
 import jakarta.transaction.Transactional;
-import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import ru.dZibert.tgBot.entity.Client;
 import ru.dZibert.tgBot.entity.ClientOrder;
@@ -46,5 +45,26 @@ public class ClientService {
      */
     public List<Client> searchClientsByName(String name) {
         return clientRepository.searchClientsByName(name);
+    }
+
+    public ClientOrder updateClientOrder(Long clientId, Double total){
+        ClientOrder clientOrder = clientOrderRepository.findLastByClientId(clientId);
+        clientOrder.setStatus(2);
+        clientOrder.setTotal(total);
+        return clientOrderRepository.save(clientOrder);
+        //return clientOrderRepository.updateClientOrder(clientId,total);
+    }
+
+    public Client findClientByExternalId(Long userId) {
+        return clientRepository.getClientByExternalId(userId);
+    }
+
+    public Client getClientById(Long clientId) {
+        return clientRepository.getClientById(clientId);
+    }
+
+
+    public ClientOrder findLastByClientId(Long clientId) {
+        return clientOrderRepository.findLastByClientId(clientId);
     }
 }
