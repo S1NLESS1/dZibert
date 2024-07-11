@@ -3,6 +3,7 @@ package ru.dZibert.tgBot.Service;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.dZibert.tgBot.entity.Client;
 import ru.dZibert.tgBot.entity.ClientOrder;
 import ru.dZibert.tgBot.entity.Product;
@@ -10,6 +11,7 @@ import ru.dZibert.tgBot.repository.ClientOrderRepository;
 import ru.dZibert.tgBot.repository.ClientRepository;
 import ru.dZibert.tgBot.repository.OrderProductRepository;
 
+import java.math.BigDecimal;
 import java.util.List;
 @Service
 @Transactional
@@ -46,5 +48,26 @@ public class ClientService {
      */
     public List<Client> searchClientsByName(String name) {
         return clientRepository.searchClientsByName(name);
+    }
+
+    public ClientOrder updateClientOrder(Long clientId, Double total){
+        ClientOrder clientOrder = clientOrderRepository.findLastByClientId(clientId);
+        clientOrder.setStatus(2);
+        clientOrder.setTotal(total);
+        return clientOrderRepository.save(clientOrder);
+        //clientOrderRepository.updateClientOrder(clientId,total);
+    }
+
+    public Client getClientByExternalId(Long userId) {
+        return clientRepository.getClientByExternalId(userId);
+    }
+
+    public Client getClientById(Long clientId) {
+        return clientRepository.getClientById(clientId);
+    }
+
+
+    public ClientOrder findLastByClientId(Long clientId) {
+        return clientOrderRepository.findLastByClientId(clientId);
     }
 }

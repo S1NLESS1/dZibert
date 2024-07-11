@@ -16,8 +16,8 @@ public class ClientOrder {
     @Column(nullable = false)
     private Integer status; // статус заказа
 
-    @Column(nullable = false,precision = 15, scale = 2)
-    private BigDecimal total; // сумма по заказу
+    @Column(nullable = false, precision = 15)
+    private Double total; // сумма по заказу
 
     public Long getId() {
         return id;
@@ -43,11 +43,11 @@ public class ClientOrder {
         this.status = status;
     }
 
-    public BigDecimal getTotal() {
+    public Double getTotal() {
         return total;
     }
 
-    public void setTotal(BigDecimal total) {
+    public void setTotal(Double total) {
         this.total = total;
     }
 

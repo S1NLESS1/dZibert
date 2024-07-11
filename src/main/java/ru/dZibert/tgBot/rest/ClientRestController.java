@@ -1,21 +1,20 @@
 package ru.dZibert.tgBot.rest;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.dZibert.tgBot.Service.ClientService;
 import ru.dZibert.tgBot.entity.Client;
 import ru.dZibert.tgBot.entity.ClientOrder;
 import ru.dZibert.tgBot.entity.Product;
+import ru.dZibert.tgBot.repository.ClientOrderRepository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
 public class ClientRestController {
     private final ClientService clientService;
 
-    public ClientRestController(ClientService clientService) {
+    public ClientRestController(ClientService clientService, ClientOrderRepository clientOrderRepository) {
         this.clientService = clientService;
     }
 
@@ -35,6 +34,11 @@ public class ClientRestController {
     @GetMapping(path = "/rest/clients/search")
     List<Client> searchClientsByName(@RequestParam String name){
         return clientService.searchClientsByName(name);
+    }
+
+    @PutMapping(path = "/rest/clients/{id}/orders")
+    public void updateClientOrder(@RequestParam Long clientId,@RequestParam Double total){
+        clientService.updateClientOrder(clientId,total);
     }
 
 }

@@ -19,8 +19,8 @@ public class Product {
     @Column(nullable = false, length = 400)
     private String description; // описание
 
-    @Column(nullable = false, precision = 15, scale = 2)
-    public BigDecimal price; // стоимость
+    @Column(nullable = false, precision = 15)
+    public Double price; // стоимость
 
     public Category getCategory() {
         return category;
@@ -54,11 +54,11 @@ public class Product {
         this.description = description;
     }
 
-    public BigDecimal getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(BigDecimal price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
