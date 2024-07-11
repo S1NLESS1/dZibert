@@ -19,7 +19,7 @@ public class Product {
     @Column(nullable = false, length = 400)
     private String description; // описание
 
-    @Column(nullable = false, length = 15,precision = 2)
+    @Column(nullable = false, precision = 15, scale = 2)
     public BigDecimal price; // стоимость
 
     public Category getCategory() {

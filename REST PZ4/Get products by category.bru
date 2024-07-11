@@ -1,0 +1,15 @@
+meta {
+  name: Get products by category
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://localhost:8080/rest/products/search?categoryId=14
+  body: none
+  auth: none
+}
+
+params:query {
+  categoryId: 14
+}
