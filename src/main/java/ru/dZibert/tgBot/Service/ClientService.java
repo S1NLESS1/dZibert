@@ -1,9 +1,7 @@
 package ru.dZibert.tgBot.Service;
 
 import jakarta.transaction.Transactional;
-import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 import ru.dZibert.tgBot.entity.Client;
 import ru.dZibert.tgBot.entity.ClientOrder;
 import ru.dZibert.tgBot.entity.Product;
@@ -11,7 +9,6 @@ import ru.dZibert.tgBot.repository.ClientOrderRepository;
 import ru.dZibert.tgBot.repository.ClientRepository;
 import ru.dZibert.tgBot.repository.OrderProductRepository;
 
-import java.math.BigDecimal;
 import java.util.List;
 @Service
 @Transactional
@@ -55,10 +52,10 @@ public class ClientService {
         clientOrder.setStatus(2);
         clientOrder.setTotal(total);
         return clientOrderRepository.save(clientOrder);
-        //clientOrderRepository.updateClientOrder(clientId,total);
+        //return clientOrderRepository.updateClientOrder(clientId,total);
     }
 
-    public Client getClientByExternalId(Long userId) {
+    public Client findClientByExternalId(Long userId) {
         return clientRepository.getClientByExternalId(userId);
     }
 

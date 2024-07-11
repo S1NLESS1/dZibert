@@ -36,9 +36,9 @@ public class ClientRestController {
         return clientService.searchClientsByName(name);
     }
 
-    @PutMapping(path = "/rest/clients/{id}/orders")
-    public void updateClientOrder(@RequestParam Long clientId,@RequestParam Double total){
-        clientService.updateClientOrder(clientId,total);
+    @PutMapping(path = "/rest/clients/orders")
+    public ClientOrder updateClientOrder( @RequestParam Long clientId,@RequestParam Double total){
+        return clientService.updateClientOrder(clientId,total);
     }
 
 }

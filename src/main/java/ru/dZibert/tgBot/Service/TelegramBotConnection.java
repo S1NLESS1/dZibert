@@ -1,4 +1,5 @@
 package ru.dZibert.tgBot.Service;
+import java.util.ArrayList;
 import java.util.Objects;
 
 import com.pengrad.telegrambot.TelegramBot;
@@ -8,10 +9,7 @@ import com.pengrad.telegrambot.model.request.*;
 import com.pengrad.telegrambot.request.SendMessage;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
-import ru.dZibert.tgBot.entity.Client;
-import ru.dZibert.tgBot.entity.ClientOrder;
-import ru.dZibert.tgBot.entity.OrderProduct;
-import ru.dZibert.tgBot.entity.Product;
+import ru.dZibert.tgBot.entity.*;
 import ru.dZibert.tgBot.repository.ClientOrderRepository;
 import ru.dZibert.tgBot.repository.ClientRepository;
 import ru.dZibert.tgBot.repository.OrderProductRepository;
@@ -53,12 +51,12 @@ public class TelegramBotConnection {
         }
 
         private void processUpdate(Update update) {
+            // логика по работе с callback
             if (update.callbackQuery() != null) {
-                System.out.println(update.callbackQuery().data());
+
                 createClient(update.callbackQuery().from().id(),update.callbackQuery().from().firstName()+" "+update.callbackQuery().from().lastName(),"+79780632047","г. Севастополь, ул. Челнокова, 12/3, кв. 66");
-                // логика по работе с callback
                 Long userId = update.callbackQuery().from().id();
-                Long clientId = clientService.getClientByExternalId(userId).getId();
+                Long clientId = clientService.findClientByExternalId(userId).getId();
                 if(productService.getOrderProductWithoutCountByClientId(clientId).size() > 0){ // есть товар без указанного количества
                     bot.execute(new SendMessage(userId,
                             "Выберите количество товара."));
@@ -69,11 +67,10 @@ public class TelegramBotConnection {
                 OrderProduct orderProduct = createOrderProduct(clientOrder,product,0);
                 orderProductRepository.save(orderProduct);
                 bot.execute(new SendMessage(userId,
-                        "Товар: "+ product.getName() + "\nЦена: " + product.getPrice()+"\nКакое количество хотите заказать?"));
+                         product.getName() + "\nЦена: " + product.getPrice()+"\nКакое количество хотите заказать?"));
                 return ;
             } else if(update.message() != null){
                 // логика по работе с сообщениями
-
                 // создаём клиента
                 createClient(update.message().from().id(),update.message().from().firstName()+" "+update.message().from().lastName(),"+79780632047","г. Севастополь, ул. Челнокова, 12/3, кв. 66");
 
@@ -81,7 +78,7 @@ public class TelegramBotConnection {
                 ReplyKeyboardMarkup markup = null;
                 InlineKeyboardMarkup keyboard_products = null;
                 Long userId = update.message().from().id();
-                Long clientId = clientService.getClientByExternalId(userId).getId();
+                Long clientId = clientService.findClientByExternalId(userId).getId();
                 if(productService.getOrderProductWithoutCountByClientId(clientId).size() > 0){ // есть товар без указанного количества
                     if(isNumeric(update.message().text())) {
                         productService.updateOrderProduct(clientId, null, Integer.parseInt(update.message().text()));
@@ -95,6 +92,8 @@ public class TelegramBotConnection {
                         return;
                     }
                 }
+                boolean main_flag = false; // для вывода "В основное меню"
+
                 switch (update.message().text()) {
                     case "Пицца" ->{
                         keyboard_products = getProductButtons(1L);
@@ -166,6 +165,7 @@ public class TelegramBotConnection {
                                 .stream()
                                 .map(category -> new KeyboardButton(category.getName()))
                                 .toList();
+                        main_flag = true;
                     }
                 }
 
@@ -174,12 +174,10 @@ public class TelegramBotConnection {
                             ReplyKeyboardMarkup(categories.toArray(KeyboardButton[]::new));
                     markup.resizeKeyboard(true);
                     markup.addRow(new KeyboardButton("Оформить заказ"));
-                    if(!Objects.equals(update.message().text(), "В основное меню")) markup.addRow(new KeyboardButton("В основное меню"));
+                    if(!main_flag) markup.addRow(new KeyboardButton("В основное меню"));
                     bot.execute(new SendMessage(update.message().chat().id(), "Категории").replyMarkup(markup));
                 }
                 else if(keyboard_products != null){
-                    markup = new
-                            ReplyKeyboardMarkup(new KeyboardButton("Оформить заказ"),new KeyboardButton("В основное меню"));
                     bot.execute(new SendMessage(userId, "Товары").replyMarkup(keyboard_products));
                 }
             }
